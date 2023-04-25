@@ -1,0 +1,59 @@
+.container {
+    width: 400px;
+    padding: 32px 24px;
+    border-radius: 12px;
+    background-color: rgb(14, 28, 55);
+
+    .title {
+        color: #ffffff;
+        font-weight: bold;
+        font-size: 16px;
+        padding-bottom: 24px;
+    }
+
+    .inputControl {
+        .label {
+            padding-bottom: 8px;
+            color: rgb(183, 190, 203);
+            font-size: 12px;
+        }
+
+        .inputWrap {
+            height: 56px;
+            width: 100%;
+            border: 1px solid transparent;
+            display: flex;
+            background: rgb(32, 46, 73);
+            box-shadow: rgb(9, 22, 46) 0px 6px 12px 0px;
+            align-items: center;
+            border-radius: 8px;
+            padding-right: 12px;
+
+            input {
+                margin-left: 12px;
+                height: 32px;
+                padding: 6px 0 7px;
+                background: none;
+                border: none;
+                font-size: 16px;
+                color: #ffffff;
+                font-weight: bold;
+                flex: 1;
+            }
+
+            input:focus {
+                border: none;
+                outline: none;
+            }
+
+            .tokenWrap {
+                display: flex;
+                align-items: center;
+                
+                img {
+                    width: 20px;
+                }
+            }
+        }
+    }
+}

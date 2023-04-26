@@ -1,0 +1,10 @@
+const ORDER_STATUS = {
+    'PENDING': 'PENDING',
+    'FULFILLMENT': 'FULFILLMENT',
+    'CANCELLATION': 'CANCELLATION',
+    'EXPIRATION': 'EXPIRATION',
+}
+
+module.exports = {
+    ORDER_STATUS
+}

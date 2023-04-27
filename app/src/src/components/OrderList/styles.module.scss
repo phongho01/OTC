@@ -1,0 +1,46 @@
+.container {
+  padding-left: 40px;
+  flex: 1;
+  color: #fff;
+
+  .tabs {
+    display: flex;
+    align-items: center;
+
+    .tabHead {
+      font-weight: bold;
+      margin-right: 32px;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all ease 0.3s;
+    }
+
+    .active {
+      border-color: #2669f5;
+    }
+  }
+
+  table {
+    margin-top: 20px;
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 1em;
+    overflow: hidden;
+
+    th,
+    td {
+      padding: 1em;
+      background: rgb(14, 28, 55);
+    }
+
+    thead > tr > th {
+      text-align: left;
+      background: rgb(14, 28, 55);
+      border-bottom: 1px solid rgba($color: #ffffff, $alpha: 0.1);
+    }
+
+    .textCenter {
+        text-align: center;
+    }
+  }
+}

@@ -17,5 +17,6 @@ body {
 .app {
   width: 100%;
   padding: 100px 300px 0px 300px;
+  display: flex;
 }
 

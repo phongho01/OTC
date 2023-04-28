@@ -9,6 +9,9 @@
     "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
+  "engines": {
+    "node": "18.12.1"
+  },
   "dependencies": {
     "@ethersproject/bytes": "^5.7.0",
     "@paraswap/sdk": "^6.2.0",

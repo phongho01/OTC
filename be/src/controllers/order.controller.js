@@ -32,6 +32,15 @@ class OrderController {
             res.sendStatus(500);
         }
     }
+
+    async create(req, res) {
+        try {
+            const newOrder = await Order.create(req.body);
+            res.json(newOrder);
+        } catch (error) {
+            res.sendStatus(500);
+        }
+    }
 }
 
 module.exports = new OrderController();

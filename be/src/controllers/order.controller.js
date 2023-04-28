@@ -8,7 +8,7 @@ class OrderController {
 
     async maker(req, res) {
         try {
-            const orders = await Order.find({ maker: req.params.makerAddress })
+            const orders = await Order.find({ "maker": { '$regex': req.params.makerAddress, $options: 'i' }});
             res.json(orders);
         } catch (error) {
             res.sendStatus(500);
@@ -16,8 +16,8 @@ class OrderController {
     }
 
     async taker(req, res) {
-        try {
-            const orders = await Order.find({ taker: req.params.takerAddress })
+        try {e
+            const orders = await Order.find({ "taker" : { '$regex': req.params.takerAddress, $options: 'i' }})
             res.json(orders);
         } catch (error) {
             res.sendStatus(500);

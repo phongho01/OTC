@@ -8,7 +8,6 @@ import { getPrice, createOrderStructure } from '../../utils/paraswap';
 import { formatNumber, diffPercent } from '../../utils/formatNumber';
 import { useSelector } from 'react-redux';
 // import { getTakerOrders } from '../../api/order.api';
-import { run } from '../../../../test';
 import ReactLoading from 'react-loading';
 
 export default function Swap() {
@@ -21,13 +20,13 @@ export default function Swap() {
   const [fromToken, setFromToken] = useState({
     img: 'https://icons.iconarchive.com/icons/cjdowner/cryptocurrency-flat/512/Ethereum-ETH-icon.png',
     symbol: 'ETH',
-    address: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+    address: '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6',
   });
 
   const [toToken, setToToken] = useState({
     img: 'https://cryptologos.cc/logos/multi-collateral-dai-dai-logo.png',
     symbol: 'DAI',
-    address: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+    address: '0xda1D463CF71A02Fd96E49D2Edf328BF629726516',
   });
 
   const [inputData, setInputData] = useState({
@@ -71,17 +70,17 @@ export default function Swap() {
 
   const handleSubmit = async () => {
     try {
-      // const args = {
-      //   maker: account,
-      //   makerAsset: fromToken.address,
-      //   takerAsset: toToken.address,
-      //   makerAmount: ethers.parseUnits(inputData.pay.toString(), 18),
-      //   takerAmount: ethers.parseUnits(inputData.receive.toString(), 18),
-      //   expiry: inputData.expiry * selectionExpiry,
-      // }
-      // const response = await createOrderStructure(args);
-      // console.log(response);
-      run();
+      const args = {
+        maker: account,
+        makerAsset: fromToken.address,
+        takerAsset: toToken.address,
+        makerAmount: ethers.utils.parseUnits(inputData.pay.toString(), 18),
+        takerAmount: ethers.utils.parseUnits(inputData.receive.toString(), 18),
+        expiry: inputData.expiry * selectionExpiry,
+        taker: inputData.taker
+      }
+      const response = await createOrderStructure(args);
+      console.log('response', response)
     } catch (error) {
       console.log('submit error: ' + error);
     }
@@ -91,7 +90,7 @@ export default function Swap() {
     const rate = await getPrice(
       fromToken.address,
       toToken.address,
-      ethers.parseUnits(inputData.pay.toString(), 18)
+      ethers.utils.parseUnits(inputData.pay.toString(), 18)
     );
     setInputData({
       ...inputData,

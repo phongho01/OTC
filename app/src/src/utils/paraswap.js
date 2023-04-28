@@ -1,60 +1,25 @@
-import {
-  constructSimpleSDK,
-  constructPartialSDK,
-  constructEthersContractCaller,
-  constructAxiosFetcher,
-  // limitOrders methods
-  constructBuildLimitOrder,
-  constructSignLimitOrder,
-  constructPostLimitOrder,
-} from '@paraswap/sdk'
-import { ethers } from 'ethers'
-import axios from 'axios'
+import { constructSimpleSDK } from '@paraswap/sdk';
+import { ADDRESS_CONVERTED } from '../constants';
+import { CHAIN_ID } from '../constants/order';
+import { buildLimitOrder, signLimitOrder, calculateOrderHash, deriveTakerFromNonceAndTaker } from './helpers/limitOrder';
+import axios from 'axios';
 
-const paraSwapMin = constructSimpleSDK({ chainId: 1, axios })
-const fetcher = constructAxiosFetcher(axios)
+const paraSwapMin = constructSimpleSDK({ chainId: 1, axios });
 
 export const getPrice = async (from, to, amount) => {
   const priceRoute = await paraSwapMin.swap.getRate({
-    srcToken: from,
-    destToken: to,
+    srcToken: ADDRESS_CONVERTED[from],
+    destToken: ADDRESS_CONVERTED[to],
     amount: amount,
     network: 1,
-  })
+  });
 
   const denominator = 10 ** (priceRoute.destAmount > 10 ** 18 ? 2 : 4);
 
-  return Math.floor((priceRoute.destAmount * denominator) / 10 ** 18 ) / denominator
-}
+  return Math.floor((priceRoute.destAmount * denominator) / 10 ** 18) / denominator;
+};
 
-export const createOrderStructure = async ({
-  maker,
-  makerAsset,
-  takerAsset,
-  makerAmount,
-  takerAmount,
-  expiry,
-}) => {
-  const provider = new ethers.providers.Web3Provider(window.ethereum)
-  const contractCaller = constructEthersContractCaller(
-    {
-      ethersProviderOrSigner: provider,
-      EthersContract: ethers.Contract,
-    },
-    maker
-  )
-
-  const paraSwapLimitOrderSDK = constructPartialSDK(
-    {
-      chainId: 1,
-      fetcher,
-      contractCaller,
-    },
-    constructBuildLimitOrder,
-    constructSignLimitOrder,
-    constructPostLimitOrder
-  )
-
+export const createOrderStructure = async ({ taker, maker, makerAsset, takerAsset, makerAmount, takerAmount, expiry }) => {
   const orderInput = {
     nonce: 1,
     expiry: Math.floor(Date.now() / 1000) + expiry,
@@ -63,23 +28,25 @@ export const createOrderStructure = async ({
     makerAmount,
     takerAmount,
     maker,
-  }
+    taker,
+  };
 
-  const signableOrderData = await paraSwapLimitOrderSDK.buildLimitOrder(
-    orderInput
-  )
+  const signableOrderData = buildLimitOrder(orderInput);
 
-  return signableOrderData;
+  const signature = await signLimitOrder(signableOrderData);
 
-  // const signature = await paraSwapLimitOrderSDK.signLimitOrder(
-  //   signableOrderData
-  // )
+  const orderHash = await calculateOrderHash(signableOrderData);
+  const takerFromMeta = deriveTakerFromNonceAndTaker(signableOrderData.data.nonceAndMeta);
 
-  // const orderToPostToApi = {
-  //   ...signableOrderData.data,
-  //   signature,
-  // }
+  const returnedData = {
+    ...signableOrderData.data,
+    signature,
+    orderHash,
+    chainId: CHAIN_ID,
+    takerFromMeta,
+  };
+  return returnedData;
 
   // const newOrder = await paraSwapLimitOrderSDK.postLimitOrder(orderToPostToApi)
   // console.log(newOrder)
-}
+};

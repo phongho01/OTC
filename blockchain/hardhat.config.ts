@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
-import { HardhatUserConfig } from "hardhat/config";
-import "@nomicfoundation/hardhat-toolbox";
+import { HardhatUserConfig } from 'hardhat/config';
+import '@nomicfoundation/hardhat-toolbox';
 
 const config: HardhatUserConfig = {
   networks: {
@@ -24,13 +24,33 @@ const config: HardhatUserConfig = {
   etherscan: {
     apiKey: {
       goerli: `${process.env.ETHERSCAN_API_KEY}`,
-      bscTestnet: `${process.env.BINANCE_API_KEY}`
-    }
+      bscTestnet: `${process.env.BINANCE_API_KEY}`,
+    },
   },
   solidity: {
     compilers: [
       {
+        version: '0.8.16',
+        settings: {
+          optimizer: {
+            enabled: true,
+            runs: 200,
+            details: { yul: true },
+          },
+        },
+      },
+      {
         version: '0.7.5',
+        settings: {
+          optimizer: {
+            enabled: true,
+            runs: 200,
+            details: { yul: true },
+          },
+        },
+      },
+      {
+        version: '0.8.10',
         settings: {
           optimizer: {
             enabled: true,

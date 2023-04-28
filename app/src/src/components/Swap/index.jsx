@@ -6,12 +6,16 @@ import { EXPIRY_OPTIONS } from '../../constants';
 import { ethers } from 'ethers';
 import { getPrice, createOrderStructure } from '../../utils/paraswap';
 import { formatNumber, diffPercent } from '../../utils/formatNumber';
-import { useSelector } from 'react-redux';
-// import { getTakerOrders } from '../../api/order.api';
+import { useSelector, useDispatch } from 'react-redux';
+import { createOrder } from '../../api/order.api';
 import ReactLoading from 'react-loading';
+import toast from '../../utils/toast';
+import { addOrder } from '../../app/slice/orderList';
 
 export default function Swap() {
   const account = useSelector((state) => state.account);
+
+  const dispatch = useDispatch();
 
   const [isLoading, setIsLoading] = useState(true);
   const [originalRate, setOriginalRate] = useState(0);
@@ -20,13 +24,13 @@ export default function Swap() {
   const [fromToken, setFromToken] = useState({
     img: 'https://icons.iconarchive.com/icons/cjdowner/cryptocurrency-flat/512/Ethereum-ETH-icon.png',
     symbol: 'ETH',
-    address: '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6',
+    address: '0x0d1F718A3079d3B695C733BA2a726873A019299a',
   });
 
   const [toToken, setToToken] = useState({
     img: 'https://cryptologos.cc/logos/multi-collateral-dai-dai-logo.png',
     symbol: 'DAI',
-    address: '0xda1D463CF71A02Fd96E49D2Edf328BF629726516',
+    address: '0xF5B217Af5d3c828BDaEE078837b8b22cD2cBe615',
   });
 
   const [inputData, setInputData] = useState({
@@ -40,15 +44,9 @@ export default function Swap() {
   const handleChange = (e) => {
     const newInputData = { ...inputData, [e.target.name]: e.target.value };
     if (e.target.name === 'pay' || e.target.name === 'rate') {
-      newInputData.receive = formatNumber(
-        newInputData.pay * newInputData.rate,
-        18
-      );
+      newInputData.receive = formatNumber(newInputData.pay * newInputData.rate, 18);
     } else if (e.target.name === 'receive') {
-      newInputData.rate = formatNumber(
-        newInputData.receive / newInputData.pay,
-        18
-      );
+      newInputData.rate = formatNumber(newInputData.receive / newInputData.pay, 18);
     }
 
     setInputData(newInputData);
@@ -77,21 +75,24 @@ export default function Swap() {
         makerAmount: ethers.utils.parseUnits(inputData.pay.toString(), 18),
         takerAmount: ethers.utils.parseUnits(inputData.receive.toString(), 18),
         expiry: inputData.expiry * selectionExpiry,
-        taker: inputData.taker
+        taker: inputData.taker,
+      };
+      if (!args.maker || !args.taker || !args.makerAmount || !args.takerAmount) {
+        toast.error('Invalid input data');
+        return;
       }
-      const response = await createOrderStructure(args);
-      console.log('response', response)
+      const orderData = await createOrderStructure(args);
+      const { data } = await createOrder(orderData);
+      dispatch(addOrder(data));
+      toast.success('Create new order successfully');
     } catch (error) {
       console.log('submit error: ' + error);
+      toast.error('An error has been occur');
     }
   };
 
   const fetchPrice = async () => {
-    const rate = await getPrice(
-      fromToken.address,
-      toToken.address,
-      ethers.utils.parseUnits(inputData.pay.toString(), 18)
-    );
+    const rate = await getPrice(fromToken.address, toToken.address, ethers.utils.parseUnits('1', 18));
     setInputData({
       ...inputData,
       rate,
@@ -119,25 +120,14 @@ export default function Swap() {
     <div className={styles.container}>
       {isLoading && (
         <div className={styles.loading}>
-          <ReactLoading
-            type="spinningBubbles"
-            color="#ffffff"
-            height={60}
-            width={60}
-          />
+          <ReactLoading type="spinningBubbles" color="#ffffff" height={60} width={60} />
         </div>
       )}
       <div className={styles.title}>OTC</div>
       <div className={styles.inputControl}>
         <div className={styles.label}>Pay</div>
         <div className={styles.inputWrap}>
-          <input
-            type="number"
-            value={inputData.pay}
-            name="pay"
-            onChange={handleChange}
-            required
-          />
+          <input type="number" value={inputData.pay} name="pay" onChange={handleChange} required />
           <div className={styles.tokenWrap}>
             <img src={fromToken.img} />
             <span>{fromToken.symbol}</span>
@@ -147,46 +137,19 @@ export default function Swap() {
       <div className={styles.inputControlMultiple}>
         <div className={styles.inputControl}>
           <div className={styles.label}>
-            <span>
-              Rate{' '}
-              {originalRate !== inputData.rate
-                ? diffPercent(originalRate, inputData.rate)
-                : ''}
-            </span>
-            <BiReset
-              size={20}
-              color="#ffffff"
-              cursor="pointer"
-              onClick={initData}
-            />
+            <span>Rate {originalRate !== inputData.rate ? diffPercent(originalRate, inputData.rate) : ''}</span>
+            <BiReset size={20} color="#ffffff" cursor="pointer" onClick={initData} />
           </div>
           <div className={styles.inputWrap}>
-            <input
-              type="number"
-              value={inputData.rate}
-              name="rate"
-              onChange={handleChange}
-              required
-            />
+            <input type="number" value={inputData.rate} name="rate" onChange={handleChange} required />
             <span>{toToken.symbol}</span>
           </div>
         </div>
         <div className={styles.inputControl}>
           <div className={styles.label}>Expiry</div>
           <div className={styles.inputWrap}>
-            <input
-              type="number"
-              value={inputData.expiry}
-              name="expiry"
-              onChange={handleChange}
-              disabled={selectionExpiry == 0}
-              required
-            />
-            <select
-              value={selectionExpiry}
-              onChange={handleSelectionExpiry}
-              name="selectionExpiry"
-            >
+            <input type="number" value={inputData.expiry} name="expiry" onChange={handleChange} disabled={selectionExpiry == 0} required />
+            <select value={selectionExpiry} onChange={handleSelectionExpiry} name="selectionExpiry">
               {EXPIRY_OPTIONS.map(({ value, label }) => (
                 <option key={value} value={value}>
                   {label}
@@ -197,23 +160,12 @@ export default function Swap() {
         </div>
       </div>
       <div className={styles.switchToken}>
-        <HiSwitchVertical
-          size={24}
-          color="#fff"
-          cursor="pointer"
-          onClick={handleSwitchToken}
-        />
+        <HiSwitchVertical size={24} color="#fff" cursor="pointer" onClick={handleSwitchToken} />
       </div>
       <div className={styles.inputControl}>
         <div className={styles.label}>Receive</div>
         <div className={styles.inputWrap}>
-          <input
-            type="number"
-            value={inputData.receive}
-            name="receive"
-            onChange={handleChange}
-            required
-          />
+          <input type="number" value={inputData.receive} name="receive" onChange={handleChange} required />
           <div className={styles.tokenWrap}>
             <img src={toToken.img} />
             <span>{toToken.symbol}</span>
@@ -223,12 +175,7 @@ export default function Swap() {
       <div className={styles.inputControl}>
         <div className={styles.label}>Taker address</div>
         <div className={styles.inputWrap}>
-          <input
-            value={inputData.taker}
-            name="taker"
-            onChange={handleChange}
-            required
-          />
+          <input value={inputData.taker} name="taker" onChange={handleChange} required />
         </div>
       </div>
       <button type="button" className={styles.submitBtn} onClick={handleSubmit}>

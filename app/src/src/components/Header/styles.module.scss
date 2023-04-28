@@ -1,0 +1,23 @@
+.container {
+    height: 100px;
+    position: fixed;
+    top: 0;
+    left: 300px;
+    right: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: right;
+
+    button {
+        border: none;
+        outline: none;
+        background-color: #DF6C2D;
+        color: #fff;
+        font-weight: bold;
+        height: 52px;
+
+        &:focus {
+            outline: none;
+        }
+    }
+}

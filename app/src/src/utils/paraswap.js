@@ -22,7 +22,7 @@ export const getPrice = async (from, to, amount) => {
 export const createOrderStructure = async ({ taker, maker, makerAsset, takerAsset, makerAmount, takerAmount, expiry }) => {
   const orderInput = {
     nonce: 1,
-    expiry: Math.floor(Date.now() / 1000) + expiry,
+    expiry: expiry === 0 ? 0 : Math.floor(Date.now() / 1000) + expiry,
     makerAsset,
     takerAsset,
     makerAmount,
@@ -37,6 +37,9 @@ export const createOrderStructure = async ({ taker, maker, makerAsset, takerAsse
 
   const orderHash = await calculateOrderHash(signableOrderData);
   const takerFromMeta = deriveTakerFromNonceAndTaker(signableOrderData.data.nonceAndMeta);
+
+  signableOrderData.data.makerAmount = signableOrderData.data.makerAmount.toString();
+  signableOrderData.data.takerAmount = signableOrderData.data.takerAmount.toString();
 
   const returnedData = {
     ...signableOrderData.data,

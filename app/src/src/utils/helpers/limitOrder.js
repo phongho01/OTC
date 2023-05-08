@@ -6,11 +6,8 @@ import { hexValue, hexZeroPad } from '@ethersproject/bytes';
 const ZERO_ADDRESS = ethers.constants.AddressZero;
 
 export const deriveTakerFromNonceAndTaker = (nonceAndMeta) => {
-  return hexZeroPad(
-    hexValue(BigInt(nonceAndMeta) & ((BigInt(1) << BigInt(160)) - BigInt(1))),
-    20
-  );
-}
+  return hexZeroPad(hexValue(BigInt(nonceAndMeta) & ((BigInt(1) << BigInt(160)) - BigInt(1))), 20);
+};
 
 export const buildLimitOrder = ({
   nonce = getRandomInt(),
@@ -60,5 +57,5 @@ export const signLimitOrder = async (typedData) => {
 };
 
 export const calculateOrderHash = async ({ domain, types, data }) => {
-  return ethers.utils._TypedDataEncoder.hash(domain, types, data);
+  return ethers.utils._TypedDataEncoder.hash(domain, types, { ...data, nonce: Math.random() * 100000 });
 };

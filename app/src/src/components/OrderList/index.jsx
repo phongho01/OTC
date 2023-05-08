@@ -10,6 +10,7 @@ import { fillOrder } from '../../utils/fillOrder';
 import { AUGUSTUS_ADDRESS, ORDER_STATUS } from '../../constants/order';
 import toast from '../../utils/toast';
 import { updateOrder } from '../../api/order.api';
+import ReactLoading from 'react-loading';
 
 export default function OrderList() {
   const account = useSelector((state) => state.account);
@@ -17,6 +18,7 @@ export default function OrderList() {
 
   const dispatch = useDispatch();
 
+  const [isLoading, setIsLoading] = useState(false);
   const [tab, setTab] = useState(0);
 
   const getExpiry = (seconds) => {
@@ -44,6 +46,7 @@ export default function OrderList() {
 
   const handleFillOrder = async (order) => {
     try {
+      setIsLoading(true);
       const args = {
         nonceAndMeta: order.nonceAndMeta,
         expiry: order.expiry,
@@ -58,17 +61,17 @@ export default function OrderList() {
       const isAllowance = await checkAllowance(args.takerAsset, AUGUSTUS_ADDRESS, args.taker, args.takerAmount);
       if (!isAllowance) {
         const tx = await approveERC20(args.takerAsset, AUGUSTUS_ADDRESS, args.takerAmount);
-        console.log(tx);
         await tx.wait();
       }
 
-      await Promise.all([
-        fillOrder(args, order.signature),
-        updateOrder(order._id, { state: ORDER_STATUS.FULFILLMENT })
-      ])
+      const tx = await fillOrder(args, order.signature);
+      await tx.wait();
+      await updateOrder(order._id, { state: ORDER_STATUS.FULFILLMENT });
       dispatch(removeOrder(order._id));
       toast.success('Fill order successfully');
+      setIsLoading(false);
     } catch (error) {
+      setIsLoading(false);
       console.log('error', error);
       toast.error('An error has been occur');
     }
@@ -82,6 +85,11 @@ export default function OrderList() {
 
   return (
     <div className={styles.container}>
+      {isLoading && (
+        <div className={styles.loading}>
+          <ReactLoading type="spinningBubbles" color="#ffffff" height={60} width={60} />
+        </div>
+      )}
       <div className={styles.tabs}>
         <div className={`${styles.tabHead} ${tab === 0 ? styles.active : ''}`} onClick={() => setTab(0)}>
           Submitted Orders

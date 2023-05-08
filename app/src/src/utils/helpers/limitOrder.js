@@ -1,5 +1,5 @@
 import { getRandomInt, sanitizeOrderData } from '../misc';
-import { AUGUSTUS_ADDRESS, CHAIN_ID, ORDER_TYPE, AUGUSTUS_NAME, AUGUSTUS_WRAPPER_TAKER } from '../../constants/order';
+import { AUGUSTUS_ADDRESS, CHAIN_ID, ORDER_TYPE, AUGUSTUS_NAME } from '../../constants/order';
 import { ethers } from 'ethers';
 import { hexValue, hexZeroPad } from '@ethersproject/bytes';
 
@@ -25,7 +25,7 @@ export const buildLimitOrder = ({
   taker: takerInNonce = ZERO_ADDRESS,
 }) => {
   const nonceAndMeta = (BigInt(takerInNonce) + (BigInt(nonce) << BigInt(160))).toString(10);
-  const taker = takerInNonce === ZERO_ADDRESS ? ZERO_ADDRESS : AUGUSTUS_WRAPPER_TAKER;
+  const taker = takerInNonce === ZERO_ADDRESS ? ZERO_ADDRESS : takerInNonce;
 
   const order = {
     nonceAndMeta,

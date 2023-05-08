@@ -1,4 +1,5 @@
 const Order = require('../models/Order.schema');
+const { ORDER_STATUS } = require('../constants');
 
 class OrderController {
     async index(req, res) {
@@ -8,7 +9,7 @@ class OrderController {
 
     async maker(req, res) {
         try {
-            const orders = await Order.find({ "maker": { '$regex': req.params.makerAddress, $options: 'i' }});
+            const orders = await Order.find({ "maker": { '$regex': req.params.makerAddress, $options: 'i' }, state: ORDER_STATUS.PENDING});
             res.json(orders);
         } catch (error) {
             res.sendStatus(500);
@@ -16,10 +17,11 @@ class OrderController {
     }
 
     async taker(req, res) {
-        try {e
-            const orders = await Order.find({ "taker" : { '$regex': req.params.takerAddress, $options: 'i' }})
+        try {
+            const orders = await Order.find({ "taker" : { '$regex': req.params.takerAddress, $options: 'i' }, state: ORDER_STATUS.PENDING })
             res.json(orders);
         } catch (error) {
+            console.log(error);
             res.sendStatus(500);
         }
     }

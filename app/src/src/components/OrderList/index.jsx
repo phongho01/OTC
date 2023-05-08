@@ -1,10 +1,14 @@
 import { useEffect, useState } from 'react';
 import styles from './styles.module.scss';
 import { formatUnits } from '../../utils/token';
-import { getMakerOrders } from '../../api/order.api';
+import { getMakerOrders, getTakerOrders } from '../../api/order.api';
 import { TOKEN_SYMBOL } from '../../constants/index';
 import { useSelector, useDispatch } from 'react-redux';
-import { setOrderList } from '../../app/slice/orderList';
+import { setOrderList, removeOrder } from '../../app/slice/orderList';
+import { approveERC20, checkAllowance } from '../../utils/erc20';
+import { fillOrder } from '../../utils/fillOrder';
+import { AUGUSTUS_ADDRESS } from '../../constants/order';
+import toast from '../../utils/toast';
 
 export default function OrderList() {
   const account = useSelector((state) => state.account);
@@ -26,13 +30,41 @@ export default function OrderList() {
         break;
       }
       case 1: {
-        dispatch(setOrderList([]));
+        const { data } = await getTakerOrders(account);
+        dispatch(setOrderList(data));
         break;
       }
       case 2: {
         dispatch(setOrderList([]));
         break;
       }
+    }
+  };
+
+  const handleFillOrder = async (order) => {
+    try {
+      const args = {
+        nonceAndMeta: order.nonceAndMeta,
+        expiry: order.expiry,
+        makerAsset: order.makerAsset,
+        takerAsset: order.takerAsset,
+        maker: order.maker,
+        taker: order.taker,
+        makerAmount: order.makerAmount,
+        takerAmount: order.takerAmount,
+      };
+
+      const isAllowance = await checkAllowance(args.takerAsset, AUGUSTUS_ADDRESS, args.taker, args.takerAmount);
+      if (!isAllowance) {
+        await approveERC20(args.takerAsset, AUGUSTUS_ADDRESS);
+      }
+
+      await fillOrder(args, order.signature);
+      dispatch(removeOrder(order._id));
+      toast.success('Fill order successfully');
+    } catch (error) {
+      console.log('error', error);
+      toast.error('An error has been occur');
     }
   };
 
@@ -69,6 +101,11 @@ export default function OrderList() {
             <th width={'20%'} className={styles.textCenter}>
               Expiry
             </th>
+            {tab === 1 && (
+              <th width={'20%'} className={styles.textCenter}>
+                Action
+              </th>
+            )}
           </tr>
         </thead>
         <tbody>
@@ -81,6 +118,13 @@ export default function OrderList() {
               <td className={styles.textCenter}>{formatUnits(item.makerAmount)}</td>
               <td className={styles.textCenter}>{formatUnits(item.takerAmount)}</td>
               <td className={styles.textCenter}>{item.expiry !== 0 ? getExpiry(item.expiry) : 'Never'}</td>
+              {tab === 1 && (
+                <td className={styles.textCenter}>
+                  <button className={styles.fillBtn} onClick={() => handleFillOrder(item)}>
+                    Fill
+                  </button>
+                </td>
+              )}
             </tr>
           ))}
         </tbody>

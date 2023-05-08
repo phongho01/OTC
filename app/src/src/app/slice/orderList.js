@@ -15,11 +15,14 @@ export const orderListSlice = createSlice({
     addOrder: (state, action) => {
       state.push(action.payload);
       return state;
+    },
+    removeOrder: (state, action) => {
+      return state.filter(item => item._id !== action.payload)
     }
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { setOrderList, addOrder } = orderListSlice.actions;
+export const { setOrderList, addOrder, removeOrder } = orderListSlice.actions;
 
 export default orderListSlice.reducer;

@@ -11,6 +11,8 @@ import { createOrder } from '../../api/order.api';
 import ReactLoading from 'react-loading';
 import toast from '../../utils/toast';
 import { addOrder } from '../../app/slice/orderList';
+import { approveERC20, checkAllowance } from '../../utils/erc20';
+import { AUGUSTUS_ADDRESS } from '../../constants/order';
 
 export default function Swap() {
   const account = useSelector((state) => state.account);
@@ -23,7 +25,7 @@ export default function Swap() {
 
   const [fromToken, setFromToken] = useState({
     img: 'https://icons.iconarchive.com/icons/cjdowner/cryptocurrency-flat/512/Ethereum-ETH-icon.png',
-    symbol: 'ETH',
+    symbol: 'WETH',
     address: '0x0d1F718A3079d3B695C733BA2a726873A019299a',
   });
 
@@ -80,6 +82,11 @@ export default function Swap() {
       if (!args.maker || !args.taker || !args.makerAmount || !args.takerAmount) {
         toast.error('Invalid input data');
         return;
+      }
+
+      const isAllowance = await checkAllowance(args.makerAsset, AUGUSTUS_ADDRESS, args.maker, args.makerAmount)
+      if(!isAllowance) {
+        await approveERC20(args.makerAsset, AUGUSTUS_ADDRESS);
       }
       const orderData = await createOrderStructure(args);
       const { data } = await createOrder(orderData);

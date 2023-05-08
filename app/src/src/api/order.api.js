@@ -11,3 +11,7 @@ export const getMakerOrders = (makerAddress) => {
 export const createOrder = (data) => {
     return axios.post('/orders', data);
 }
+
+export const updateOrder = (id, data) => {
+    return axios.patch('/orders/' + id, data);
+}

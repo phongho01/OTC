@@ -7,8 +7,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import { setOrderList, removeOrder } from '../../app/slice/orderList';
 import { approveERC20, checkAllowance } from '../../utils/erc20';
 import { fillOrder } from '../../utils/fillOrder';
-import { AUGUSTUS_ADDRESS } from '../../constants/order';
+import { AUGUSTUS_ADDRESS, ORDER_STATUS } from '../../constants/order';
 import toast from '../../utils/toast';
+import { updateOrder } from '../../api/order.api';
 
 export default function OrderList() {
   const account = useSelector((state) => state.account);
@@ -56,10 +57,15 @@ export default function OrderList() {
 
       const isAllowance = await checkAllowance(args.takerAsset, AUGUSTUS_ADDRESS, args.taker, args.takerAmount);
       if (!isAllowance) {
-        await approveERC20(args.takerAsset, AUGUSTUS_ADDRESS);
+        const tx = await approveERC20(args.takerAsset, AUGUSTUS_ADDRESS, args.takerAmount);
+        console.log(tx);
+        await tx.wait();
       }
 
-      await fillOrder(args, order.signature);
+      await Promise.all([
+        fillOrder(args, order.signature),
+        updateOrder(order._id, { state: ORDER_STATUS.FULFILLMENT })
+      ])
       dispatch(removeOrder(order._id));
       toast.success('Fill order successfully');
     } catch (error) {

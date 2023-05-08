@@ -43,6 +43,16 @@ class OrderController {
             res.sendStatus(500);
         }
     }
+
+    async update(req, res) {
+        try {
+            await Order.findOneAndUpdate({ _id: req.params.orderId }, req.body);
+            res.sendStatus(200);
+        } catch (error) {
+            console.log(error);
+            res.sendStatus(500);
+        }
+    }
 }
 
 module.exports = new OrderController();

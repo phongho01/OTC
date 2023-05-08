@@ -86,7 +86,7 @@ export default function Swap() {
 
       const isAllowance = await checkAllowance(args.makerAsset, AUGUSTUS_ADDRESS, args.maker, args.makerAmount)
       if(!isAllowance) {
-        await approveERC20(args.makerAsset, AUGUSTUS_ADDRESS);
+        await approveERC20(args.makerAsset, AUGUSTUS_ADDRESS, args.makerAmount);
       }
       const orderData = await createOrderStructure(args);
       const { data } = await createOrder(orderData);

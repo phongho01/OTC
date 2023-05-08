@@ -51,7 +51,7 @@ function App() {
   return (
     <div className="app">
       <ToastContainer />
-      {!account && <Header handleAccountsChanged={handleAccountsChanged} />}
+      {<Header handleAccountsChanged={handleAccountsChanged} />}
       <Swap />
       <OrderList />
     </div>

@@ -2,11 +2,13 @@
     height: 100px;
     position: fixed;
     top: 0;
-    left: 300px;
-    right: 300px;
+    left: 0;
+    right: 0;
+    padding: 0 300px;
     display: flex;
     align-items: center;
-    justify-content: right;
+    justify-content: space-between;
+    background-color: #09162E;
 
     button {
         border: none;
@@ -18,6 +20,23 @@
 
         &:focus {
             outline: none;
+        }
+    }
+
+    .balance {
+        color: #ffffff;
+        font-weight: bold;
+
+        div {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        img {
+            width: 20px;
+            margin-left: 12px;
+            transform: translateY((-3px));
         }
     }
 }

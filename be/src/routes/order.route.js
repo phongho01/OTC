@@ -6,5 +6,6 @@ router.get('/', orderController.index);
 router.get('/maker/:makerAddress', orderController.maker);
 router.get('/taker/:takerAddress', orderController.taker);
 router.post('/', orderController.create);
+router.patch('/:orderId', orderController.update);
 
 module.exports = router;

@@ -69,6 +69,10 @@ export default function Swap() {
   };
 
   const handleSubmit = async () => {
+    if(inputData.taker === account) {
+      toast.error('Taker must not be the same as maker');
+      return;
+    }
     try {
       setIsLoading(true);
       const args = {
@@ -85,11 +89,11 @@ export default function Swap() {
         return;
       }
 
-      const isAllowance = await checkAllowance(args.makerAsset, AUGUSTUS_ADDRESS, args.maker, args.makerAmount)
-      if(!isAllowance) {
-        await approveERC20(args.makerAsset, AUGUSTUS_ADDRESS, args.makerAmount);
+      while(!(await checkAllowance(args.makerAsset, AUGUSTUS_ADDRESS, args.maker, args.makerAmount))) {
+        const tx = await approveERC20(args.makerAsset, AUGUSTUS_ADDRESS, args.makerAmount);
+        await tx.wait();
       }
-      const orderData = await createOrderStructure(args);
+     const orderData = await createOrderStructure(args);
       const { data } = await createOrder(orderData);
       dispatch(addOrder(data));
       setIsLoading(false);

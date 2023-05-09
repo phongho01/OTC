@@ -16,7 +16,7 @@ export const getContractSymbol = async (contractAddress) => {
 export const checkAllowance = async (contractAddress, spender, account, amount) => {
     const contract = new ethers.Contract(contractAddress, ERC20ABI, provider);
     const allowance = await contract.allowance(account, spender);
-    return allowance >= amount;
+    return allowance.gte(amount);
 }
 
 export const approveERC20 = async (contractAddress, spender, amount = ethers.constants.MaxInt256) => {

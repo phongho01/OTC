@@ -58,8 +58,7 @@ export default function OrderList() {
         takerAmount: order.takerAmount,
       };
 
-      const isAllowance = await checkAllowance(args.takerAsset, AUGUSTUS_ADDRESS, args.taker, args.takerAmount);
-      if (!isAllowance) {
+      while (!(await checkAllowance(args.takerAsset, AUGUSTUS_ADDRESS, args.taker, args.takerAmount))) {
         const tx = await approveERC20(args.takerAsset, AUGUSTUS_ADDRESS, args.takerAmount);
         await tx.wait();
       }

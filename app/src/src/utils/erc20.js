@@ -20,6 +20,7 @@ export const checkAllowance = async (contractAddress, spender, account, amount) 
 }
 
 export const approveERC20 = async (contractAddress, spender, amount = ethers.constants.MaxInt256) => {
-    const contract = new ethers.Contract(contractAddress, ERC20ABI, ethers.constants.MaxInt256);
-    return contract.approve(spender, amount);
+    const signer = provider.getSigner();
+    const contract = new ethers.Contract(contractAddress, ERC20ABI, signer);
+    return contract.approve(spender, ethers.constants.MaxInt256);
 }

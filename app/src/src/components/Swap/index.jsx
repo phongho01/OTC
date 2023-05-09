@@ -70,6 +70,7 @@ export default function Swap() {
 
   const handleSubmit = async () => {
     try {
+      setIsLoading(true);
       const args = {
         maker: account,
         makerAsset: fromToken.address,
@@ -91,8 +92,10 @@ export default function Swap() {
       const orderData = await createOrderStructure(args);
       const { data } = await createOrder(orderData);
       dispatch(addOrder(data));
+      setIsLoading(false);
       toast.success('Create new order successfully');
     } catch (error) {
+      setIsLoading(false);
       console.log('submit error: ' + error);
       toast.error('An error has been occur');
     }

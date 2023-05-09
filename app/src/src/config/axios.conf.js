@@ -1,10 +1,14 @@
 import axios from 'axios';
 
-const API_URL = 'https://otc-api.onrender.com/api/v1';
-// const API_URL = 'http://localhost:3001/api/v1';
+const env = import.meta.env.VITE_ENVIROMENT
+
+const API_URL = {
+    development: 'http://localhost:3001/api/v1',
+    production: 'https://otc-api.onrender.com/api/v1'
+}
 
 const instance = axios.create({
-    baseURL: API_URL,
+    baseURL: API_URL[env],
     headers: {
         'Content-Type': 'application/json'
     }

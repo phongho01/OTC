@@ -76,10 +76,18 @@ describe('AugustusRFQ', () => {
     const { signature: makerSignature, orderHash, chainId, takerFromMeta, ...order } = returnedData;
     await weth.connect(maker).approve(augustusRFQ.address, ethers.constants.MaxInt256);
     await dai.connect(taker).approve(augustusRFQ.address, ethers.constants.MaxInt256);
-    console.log(order);
+
+    console.log(orderHash);
+      // await augustusRFQ.connect(maker).cancelOrder(order);
+
     await expect(augustusRFQ.connect(taker).fillOrder(order, signature))
       .to.changeTokenBalances(weth, [maker.address, taker.address], [TOKEN_1.mul(-1), TOKEN_1])
       .to.changeTokenBalances(dai, [maker.address, taker.address], [TOKEN_100.mul(20), TOKEN_100.mul(20).mul(-1)])
+
+    const res = await createOrderStructure(args);
+    console.log(res.returnedData.orderHash);
+    
+      
 
   });
 });

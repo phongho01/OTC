@@ -283,8 +283,29 @@ export const FillOrderABI = [
     stateMutability: 'nonpayable',
     type: 'function',
   },
-  { inputs: [{ internalType: 'bytes32', name: 'orderHash', type: 'bytes32' }], name: 'cancelOrder', outputs: [], stateMutability: 'nonpayable', type: 'function' },
-  { inputs: [{ internalType: 'bytes32[]', name: 'orderHashes', type: 'bytes32[]' }], name: 'cancelOrders', outputs: [], stateMutability: 'nonpayable', type: 'function' },
+  {
+    inputs: [
+      {
+        components: [
+          { internalType: 'uint256', name: 'nonceAndMeta', type: 'uint256' },
+          { internalType: 'uint128', name: 'expiry', type: 'uint128' },
+          { internalType: 'address', name: 'makerAsset', type: 'address' },
+          { internalType: 'address', name: 'takerAsset', type: 'address' },
+          { internalType: 'address', name: 'maker', type: 'address' },
+          { internalType: 'address', name: 'taker', type: 'address' },
+          { internalType: 'uint256', name: 'makerAmount', type: 'uint256' },
+          { internalType: 'uint256', name: 'takerAmount', type: 'uint256' },
+        ],
+        internalType: 'struct AugustusRFQ.Order',
+        name: 'order',
+        type: 'tuple',
+      },
+    ],
+    name: 'cancelOrder',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
   {
     inputs: [
       {

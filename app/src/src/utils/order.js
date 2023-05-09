@@ -3,10 +3,13 @@ import { ethers } from 'ethers';
 import { AUGUSTUS_ADDRESS } from '../constants/order';
 
 const provider = new ethers.providers.Web3Provider(window.ethereum);
-
+const signer = provider.getSigner();
+const contract = new ethers.Contract(AUGUSTUS_ADDRESS, FillOrderABI, signer);
 
 export const fillOrder = async (order, signature) => {
-    const signer = provider.getSigner();
-    const contract = new ethers.Contract(AUGUSTUS_ADDRESS, FillOrderABI, signer);
     return contract.fillOrder(order, signature)
+}
+
+export const cancelOrder = async (order) => {
+    return contract.cancelOrder(order);
 }

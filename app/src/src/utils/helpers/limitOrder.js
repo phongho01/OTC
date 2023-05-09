@@ -10,7 +10,6 @@ export const deriveTakerFromNonceAndTaker = (nonceAndMeta) => {
 };
 
 export const buildLimitOrder = ({
-  nonce = getRandomInt(),
   expiry,
   makerAsset,
   takerAsset,
@@ -21,6 +20,7 @@ export const buildLimitOrder = ({
   // if taker is not specified -- limitOrder for anyone to fill through Augustus or not -- taker = Zero, takerInNonce = Zero
   taker: takerInNonce = ZERO_ADDRESS,
 }) => {
+  const nonce = getRandomInt();
   const nonceAndMeta = (BigInt(takerInNonce) + (BigInt(nonce) << BigInt(160))).toString(10);
   const taker = takerInNonce === ZERO_ADDRESS ? ZERO_ADDRESS : takerInNonce;
 
@@ -57,5 +57,5 @@ export const signLimitOrder = async (typedData) => {
 };
 
 export const calculateOrderHash = async ({ domain, types, data }) => {
-  return ethers.utils._TypedDataEncoder.hash(domain, types, { ...data, nonce: Math.random() * 100000 });
+  return ethers.utils._TypedDataEncoder.hash(domain, types, data);
 };

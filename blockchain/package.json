@@ -9,6 +9,8 @@
   "dependencies": {
     "@ethersproject/bytes": "^5.7.0",
     "@openzeppelin/contracts": "^4.8.3",
-    "dotenv": "^16.0.3"
+    "crypto-random-string": "^5.0.0",
+    "dotenv": "^16.0.3",
+    "randomstring": "^1.2.3"
   }
 }

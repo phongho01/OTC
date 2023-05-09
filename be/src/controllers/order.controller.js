@@ -26,11 +26,16 @@ class OrderController {
         }
     }
 
-    async create(req, res) {
+    async history(req, res) {
         try {
-            const order = await Order.create(req.body);
-            res.json(order);
+            const user = req.params.user;
+            const orders = await Order.find({ $or: [ 
+                {"taker" : { '$regex': user, $options: 'i' }},
+                {"maker" : { '$regex': user, $options: 'i' }}
+             ], state: { $ne: ORDER_STATUS.PENDING } })
+            res.json(orders);
         } catch (error) {
+            console.log(error);
             res.sendStatus(500);
         }
     }

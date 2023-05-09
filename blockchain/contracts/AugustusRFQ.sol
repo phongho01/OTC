@@ -7,6 +7,7 @@ import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC1155/IERC1155.sol";
 import "@openzeppelin/contracts/utils/cryptography/SignatureChecker.sol";
+import "hardhat/console.sol";
 
 import {IERC20PermitLegacy} from "./IERC20Permit.sol";
 
@@ -67,20 +68,10 @@ contract AugustusRFQ is EIP712("AUGUSTUS RFQ", "1") {
         }
     }
 
-    /**
-     * @notice Cancel one or more orders using orderHashes
-     * @dev Cancelled orderHashes are marked as used
-     * @dev Emits a Cancel event
-     * @dev Out of gas may occur in arrays of length > 400
-     * @param orderHashes bytes32[] List of order hashes to cancel
-     */
-    function cancelOrders(bytes32[] calldata orderHashes) external {
-        for (uint256 i = 0; i < orderHashes.length; i++) {
-            cancelOrder(orderHashes[i]);
-        }
-    }
-
-    function cancelOrder(bytes32 orderHash) public {
+    function cancelOrder(Order memory order) public {
+        bytes32 orderHash = _hashTypedDataV4(
+            keccak256(abi.encode(RFQ_LIMIT_ORDER_TYPEHASH, order))
+        );
         if (_cancelOrder(msg.sender, orderHash)) {
             emit OrderCancelled(orderHash, msg.sender);
         }
@@ -362,6 +353,7 @@ contract AugustusRFQ is EIP712("AUGUSTUS RFQ", "1") {
         bytes32 orderHash = _hashTypedDataV4(
             keccak256(abi.encode(RFQ_LIMIT_ORDER_TYPEHASH, order))
         );
+        // console.logBytes32(orderHash);
         _checkOrder(
             maker,
             order.taker,

@@ -15,3 +15,7 @@ export const createOrder = (data) => {
 export const updateOrder = (id, data) => {
     return axios.patch('/orders/' + id, data);
 }
+
+export const orderHistory = (account) => {
+    return axios.get('/orders/' + account + '/history');
+}

@@ -1,15 +1,14 @@
 import { useEffect, useState } from 'react';
 import styles from './styles.module.scss';
 import { formatUnits } from '../../utils/token';
-import { getMakerOrders, getTakerOrders } from '../../api/order.api';
+import { getMakerOrders, getTakerOrders, orderHistory, updateOrder } from '../../api/order.api';
 import { TOKEN_SYMBOL } from '../../constants/index';
 import { useSelector, useDispatch } from 'react-redux';
 import { setOrderList, removeOrder } from '../../app/slice/orderList';
 import { approveERC20, checkAllowance } from '../../utils/erc20';
-import { fillOrder } from '../../utils/fillOrder';
+import { fillOrder, cancelOrder } from '../../utils/order';
 import { AUGUSTUS_ADDRESS, ORDER_STATUS } from '../../constants/order';
 import toast from '../../utils/toast';
-import { updateOrder } from '../../api/order.api';
 import ReactLoading from 'react-loading';
 
 export default function OrderList() {
@@ -38,7 +37,8 @@ export default function OrderList() {
         break;
       }
       case 2: {
-        dispatch(setOrderList([]));
+        const { data } = await orderHistory(account);
+        dispatch(setOrderList(data));
         break;
       }
     }
@@ -77,6 +77,32 @@ export default function OrderList() {
     }
   };
 
+  const handleCancelOrder = async (order) => {
+    try {
+      setIsLoading(true);
+      const args = {
+        nonceAndMeta: order.nonceAndMeta,
+        expiry: order.expiry,
+        makerAsset: order.makerAsset,
+        takerAsset: order.takerAsset,
+        maker: order.maker,
+        taker: order.taker,
+        makerAmount: order.makerAmount,
+        takerAmount: order.takerAmount,
+      };
+      const tx = await cancelOrder(args);
+      await tx.wait();
+      await updateOrder(order._id, { state: ORDER_STATUS.CANCELLATION });
+      dispatch(removeOrder(order._id));
+      toast.success('Cancel order successfully');
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+      console.log('error', error);
+      toast.error('An error has been occur');
+    }
+  };
+
   useEffect(() => {
     if (account) {
       getOrderList(tab);
@@ -104,22 +130,20 @@ export default function OrderList() {
       <table>
         <thead>
           <tr>
-            <th width={'20%'}>Market</th>
-            <th width={'20%'}>Status</th>
+            <th width={'15%'}>Market</th>
             <th width={'20%'} className={styles.textCenter}>
               Maker Amount
             </th>
-            <th width={'20%'} className={styles.textCenter}>
+            <th width={'15%'} className={styles.textCenter}>
               Taker Amount
             </th>
-            <th width={'20%'} className={styles.textCenter}>
+            <th width={'15%'} className={styles.textCenter}>
               Expiry
             </th>
-            {tab === 1 && (
-              <th width={'20%'} className={styles.textCenter}>
-                Action
-              </th>
-            )}
+            <th width={'20%'}>Status</th>
+            <th width={'15%'} className={styles.textCenter}>
+              Action
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -128,14 +152,28 @@ export default function OrderList() {
               <td>
                 {TOKEN_SYMBOL[item.makerAsset]} - {TOKEN_SYMBOL[item.takerAsset]}
               </td>
-              <td>{item.state}</td>
               <td className={styles.textCenter}>{formatUnits(item.makerAmount)}</td>
               <td className={styles.textCenter}>{formatUnits(item.takerAmount)}</td>
               <td className={styles.textCenter}>{item.expiry !== 0 ? getExpiry(item.expiry) : 'Never'}</td>
+              <td>{item.state}</td>
+              {tab === 0 && (
+                <td className={styles.textCenter}>
+                  <button className={styles.fillBtn} onClick={() => handleCancelOrder(item)}>
+                    Cancel
+                  </button>
+                </td>
+              )}
               {tab === 1 && (
                 <td className={styles.textCenter}>
                   <button className={styles.fillBtn} onClick={() => handleFillOrder(item)}>
                     Fill
+                  </button>
+                </td>
+              )}
+              {tab === 2 && (
+                <td className={styles.textCenter}>
+                  <button className={styles.fillBtn} onClick={() => handleCancelOrder(item)}>
+                    View
                   </button>
                 </td>
               )}

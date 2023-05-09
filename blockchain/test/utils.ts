@@ -62,7 +62,6 @@ export const deriveTakerFromNonceAndTaker = (nonceAndMeta) => {
 };
 
 export const buildLimitOrder = ({
-  nonce = getRandomInt(),
   expiry,
   makerAsset,
   takerAsset,
@@ -76,6 +75,7 @@ export const buildLimitOrder = ({
   AUGUSTUS_WRAPPER_TAKER,
   CHAIN_ID,
 }) => {
+  const nonce = getRandomInt();
   const nonceAndMeta = (BigInt(takerInNonce) + (BigInt(nonce) << BigInt(160))).toString(10);
   const taker = takerInNonce === ZERO_ADDRESS ? ZERO_ADDRESS : takerInNonce;
 
@@ -141,6 +141,7 @@ export const createOrderStructure = async ({
   // const signature = await signLimitOrder(signableOrderData);
 
   const orderHash = await calculateOrderHash(signableOrderData);
+  // const orderHash = randomstring.generate(66);
   const takerFromMeta = deriveTakerFromNonceAndTaker(signableOrderData.data.nonceAndMeta);
 
   signableOrderData.data.makerAmount = signableOrderData.data.makerAmount.toString();

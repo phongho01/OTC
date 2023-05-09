@@ -45,6 +45,10 @@ export default function OrderList() {
   };
 
   const handleFillOrder = async (order) => {
+    if(order.expiry !== 0 && order.expiry < Date.now() / 1000) {
+      toast.warning('Order expired');
+      return;
+    }
     try {
       setIsLoading(true);
       const args = {
@@ -171,9 +175,10 @@ export default function OrderList() {
               )}
               {tab === 2 && (
                 <td className={styles.textCenter}>
-                  <button className={styles.fillBtn} onClick={() => handleCancelOrder(item)}>
+                  {/* <button className={styles.fillBtn} onClick={() => handleCancelOrder(item)}>
                     View
-                  </button>
+                  </button> */}
+                  #
                 </td>
               )}
             </tr>

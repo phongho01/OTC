@@ -1,12 +1,16 @@
+import { useState } from 'react';
 import styles from './styles.module.scss';
 import { useSelector } from 'react-redux';
 import { WETH_TOKEN, DAI_TOKEN } from '../../constants/order';
 import { ethers } from 'ethers';
 import { useTokenBalance } from '@usedapp/core';
+import MintTokenModal from '../MintTokenModal';
 
 // eslint-disable-next-line react/prop-types
 export default function Header({ handleAccountsChanged }) {
   const account = useSelector((state) => state.account);
+
+  const [openMintToken, setOpenMintToken] = useState(false);
 
   const wethBalance = useTokenBalance(WETH_TOKEN, account);
   const daiBalance = useTokenBalance(DAI_TOKEN, account);
@@ -26,6 +30,7 @@ export default function Header({ handleAccountsChanged }) {
 
   return (
     <div className={styles.container}>
+      {openMintToken && <MintTokenModal handleClose={setOpenMintToken} />}
       <div className={styles.balance}>
         {wethBalance && (
           <div>
@@ -40,7 +45,7 @@ export default function Header({ handleAccountsChanged }) {
           </div>
         )}
       </div>
-      <div>{!account && <button onClick={handleClick}>Connect Metamask</button>}</div>
+      <div>{!account ? <button onClick={handleClick}>Connect Metamask</button> : <button onClick={() => setOpenMintToken(true)}>Get more WETH/DAI</button>}</div>
     </div>
   );
 }

@@ -93,7 +93,7 @@ export default function Swap() {
         const tx = await approveERC20(args.makerAsset, AUGUSTUS_ADDRESS, args.makerAmount);
         await tx.wait();
       }
-     const orderData = await createOrderStructure(args);
+      const orderData = await createOrderStructure(args);
       const { data } = await createOrder(orderData);
       dispatch(addOrder(data));
       setIsLoading(false);

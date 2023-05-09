@@ -24,3 +24,10 @@ export const approveERC20 = async (contractAddress, spender, amount = ethers.con
     const contract = new ethers.Contract(contractAddress, ERC20ABI, signer);
     return contract.approve(spender, ethers.constants.MaxInt256);
 }
+
+export const mintToken = async (contractAddress, amount) => {
+    const signer = provider.getSigner();
+    const contract = new ethers.Contract(contractAddress, ERC20ABI, signer);
+    return contract.mint(amount);
+
+}

@@ -69,7 +69,7 @@ export default function Swap() {
   };
 
   const handleSubmit = async () => {
-    if(inputData.taker === account) {
+    if (inputData.taker === account) {
       toast.error('Taker must not be the same as maker');
       return;
     }
@@ -89,7 +89,7 @@ export default function Swap() {
         return;
       }
 
-      while(!(await checkAllowance(args.makerAsset, AUGUSTUS_ADDRESS, args.maker, args.makerAmount))) {
+      while (!(await checkAllowance(args.makerAsset, AUGUSTUS_ADDRESS, args.maker, args.makerAmount))) {
         const tx = await approveERC20(args.makerAsset, AUGUSTUS_ADDRESS, args.makerAmount);
         await tx.wait();
       }

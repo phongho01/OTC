@@ -45,8 +45,10 @@ export default function OrderList() {
   };
 
   const handleFillOrder = async (order) => {
-    if(order.expiry !== 0 && order.expiry < Date.now() / 1000) {
+    if (order.expiry !== 0 && order.expiry < Date.now() / 1000) {
       toast.warning('Order expired');
+      await updateOrder(order._id, { state: ORDER_STATUS.EXPIRATION });
+      dispatch(removeOrder(order._id));
       return;
     }
     try {
@@ -81,6 +83,12 @@ export default function OrderList() {
   };
 
   const handleCancelOrder = async (order) => {
+    if (order.expiry !== 0 && order.expiry < Date.now() / 1000) {
+      toast.warning('Order expired');
+      await updateOrder(order._id, { state: ORDER_STATUS.EXPIRATION });
+      dispatch(removeOrder(order._id));
+      return;
+    }
     try {
       setIsLoading(true);
       const args = {

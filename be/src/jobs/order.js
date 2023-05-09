@@ -4,7 +4,6 @@ const { ORDER_STATUS } = require('../constants');
 
 const orderJob = cron.schedule('*/30 * * * * *', async () => {
   const dateNow = Date.now() / 1000;
-  console.log(dateNow/ 1000)
   const orders = await Order.find({ $and: [
     { expiry: { $ne: 0 } },
     { expiry: { $lt: dateNow } }

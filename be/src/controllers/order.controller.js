@@ -9,7 +9,7 @@ class OrderController {
 
     async maker(req, res) {
         try {
-            const orders = await Order.find({ "maker": { '$regex': req.params.makerAddress, $options: 'i' }, state: ORDER_STATUS.PENDING});
+            const orders = await Order.find({ "maker": { '$regex': req.params.makerAddress, $options: 'i' }, state: ORDER_STATUS.PENDING}).sort({ createdAt: -1 });
             res.json(orders);
         } catch (error) {
             res.sendStatus(500);
@@ -18,7 +18,7 @@ class OrderController {
 
     async taker(req, res) {
         try {
-            const orders = await Order.find({ "taker" : { '$regex': req.params.takerAddress, $options: 'i' }, state: ORDER_STATUS.PENDING })
+            const orders = await Order.find({ "taker" : { '$regex': req.params.takerAddress, $options: 'i' }, state: ORDER_STATUS.PENDING }).sort({ createdAt: -1 });
             res.json(orders);
         } catch (error) {
             console.log(error);
@@ -32,7 +32,7 @@ class OrderController {
             const orders = await Order.find({ $or: [ 
                 {"taker" : { '$regex': user, $options: 'i' }},
                 {"maker" : { '$regex': user, $options: 'i' }}
-             ], state: { $ne: ORDER_STATUS.PENDING } })
+             ], state: { $ne: ORDER_STATUS.PENDING } }).sort({ createdAt: -1 });
             res.json(orders);
         } catch (error) {
             console.log(error);

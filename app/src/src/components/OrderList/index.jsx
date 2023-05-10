@@ -160,29 +160,29 @@ export default function OrderList() {
         <tbody>
           {orderList.map((item, index) => (
             <tr key={index}>
-              <td>
+              <td width={'15%'}>
                 {TOKEN_SYMBOL[item.makerAsset]} - {TOKEN_SYMBOL[item.takerAsset]}
               </td>
-              <td className={styles.textCenter}>{formatUnits(item.makerAmount)}</td>
-              <td className={styles.textCenter}>{formatUnits(item.takerAmount)}</td>
-              <td className={styles.textCenter}>{item.expiry !== 0 ? getExpiry(item.expiry) : 'Never'}</td>
-              <td>{item.state}</td>
+              <td className={styles.textCenter} width={'20%'}>{formatUnits(item.makerAmount)}</td>
+              <td className={styles.textCenter} width={'15%'}>{formatUnits(item.takerAmount)}</td>
+              <td className={styles.textCenter} width={'15%'}>{item.expiry !== 0 ? getExpiry(item.expiry) : 'Never'}</td>
+              <td width={'20%'}>{item.state}</td>
               {tab === 0 && (
-                <td className={styles.textCenter}>
+                <td className={styles.textCenter} width={'15%'}>
                   <button className={styles.fillBtn} onClick={() => handleCancelOrder(item)}>
                     Cancel
                   </button>
                 </td>
               )}
               {tab === 1 && (
-                <td className={styles.textCenter}>
+                <td className={styles.textCenter} width={'15%'}>
                   <button className={styles.fillBtn} onClick={() => handleFillOrder(item)}>
                     Fill
                   </button>
                 </td>
               )}
               {tab === 2 && (
-                <td className={styles.textCenter}>
+                <td className={styles.textCenter} width={'15%'}>
                   {/* <button className={styles.fillBtn} onClick={() => handleCancelOrder(item)}>
                     View
                   </button> */}

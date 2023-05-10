@@ -4,6 +4,10 @@
   border-radius: 12px;
   background-color: rgb(14, 28, 55);
 
+  div[class^='_loading'] {
+    z-index: 99;
+  }
+
   .loading {
     position: fixed;
     top: 0;

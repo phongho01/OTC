@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import styles from './styles.module.scss';
 import { useSelector } from 'react-redux';
-import { WETH_TOKEN, DAI_TOKEN } from '../../constants/order';
+import { WETH_TOKEN, DAI_TOKEN } from '@constants/order';
 import { ethers } from 'ethers';
 import { useTokenBalance } from '@usedapp/core';
 import MintTokenModal from '../MintTokenModal';

@@ -1,14 +1,14 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import './App.css';
-import Swap from './src/components/Swap';
-import OrderList from './src/components/OrderList';
-import Header from './src/components/Header';
-import { setAccount } from './src/app/slice/account';
-import { setOrderList } from './src/app/slice/orderList';
+import Swap from '@src/components/Swap';
+import OrderList from '@src/components/OrderList';
+import Header from '@src/components/Header';
+import { setAccount } from '@src/app/slice/account';
+import { setOrderList } from '@src/app/slice/orderList';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { getMakerOrders } from './src/api/order.api';
+import { getMakerOrders } from '@src/api/order.api';
 
 function App() {
   const account = useSelector((state) => state.account);

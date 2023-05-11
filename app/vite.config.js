@@ -15,6 +15,7 @@ export default defineConfig({
       '@components': resolve(__dirname, './src/components/'),
       '@utils': resolve(__dirname, './src/utils/'),
       '@api': resolve(__dirname, './src/api/'),
+      '@app': resolve(__dirname, './src/app/'),
       '@constants': resolve(__dirname, './src/constants/'),
       '@config': resolve(__dirname, './src/config/'),
       '@hooks': resolve(__dirname, './src/hooks/'),

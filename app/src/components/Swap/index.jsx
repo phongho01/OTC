@@ -2,17 +2,17 @@ import { useState, useEffect } from 'react';
 import styles from './styles.module.scss';
 import { HiSwitchVertical } from 'react-icons/hi';
 import { BiReset } from 'react-icons/bi';
-import { EXPIRY_OPTIONS } from '../../constants';
+import { EXPIRY_OPTIONS } from '@constants';
 import { ethers } from 'ethers';
-import { getPrice, createOrderStructure } from '../../utils/paraswap';
-import { formatNumber, diffPercent } from '../../utils/formatNumber';
+import { getPrice, createOrderStructure } from '@utils/paraswap';
+import { formatNumber, diffPercent } from '@utils/formatNumber';
 import { useSelector, useDispatch } from 'react-redux';
-import { createOrder } from '../../api/order.api';
+import { createOrder } from '@api/order.api';
 import ReactLoading from 'react-loading';
-import toast from '../../utils/toast';
-import { addOrder } from '../../app/slice/orderList';
-import { approveERC20, checkAllowance } from '../../utils/erc20';
-import { AUGUSTUS_ADDRESS } from '../../constants/order';
+import toast from '@utils/toast';
+import { addOrder } from '@app/slice/orderList';
+import { approveERC20, checkAllowance } from '@utils/erc20';
+import { AUGUSTUS_ADDRESS } from '@constants/order';
 
 export default function Swap() {
   const account = useSelector((state) => state.account);

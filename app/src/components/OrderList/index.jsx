@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
 import styles from './styles.module.scss';
-import { formatUnits } from '../../utils/token';
-import { getMakerOrders, getTakerOrders, orderHistory, updateOrder } from '../../api/order.api';
-import { TOKEN_SYMBOL } from '../../constants/index';
+import { formatUnits } from '@utils/token';
+import { getMakerOrders, getTakerOrders, orderHistory, updateOrder } from '@api/order.api';
+import { TOKEN_SYMBOL } from '@constants/index';
 import { useSelector, useDispatch } from 'react-redux';
-import { setOrderList, removeOrder } from '../../app/slice/orderList';
-import { approveERC20, checkAllowance } from '../../utils/erc20';
-import { fillOrder, cancelOrder } from '../../utils/order';
-import { AUGUSTUS_ADDRESS, ORDER_STATUS } from '../../constants/order';
-import toast from '../../utils/toast';
+import { setOrderList, removeOrder } from '@app/slice/orderList';
+import { approveERC20, checkAllowance } from '@utils/erc20';
+import { fillOrder, cancelOrder } from '@utils/order';
+import { AUGUSTUS_ADDRESS, ORDER_STATUS } from '@constants/order';
+import toast from '@utils/toast';
 import ReactLoading from 'react-loading';
 
 export default function OrderList() {

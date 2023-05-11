@@ -60,12 +60,6 @@
     overflow-y: auto;
     height: 580px;
 
-    thead {
-      position: sticky;
-      top: 0;
-      z-index: 1;
-    }
-
     th,
     td {
       padding: 1em;

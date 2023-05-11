@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import styles from './styles.module.scss';
-import { WETH_TOKEN, DAI_TOKEN } from '../../constants/order';
-import { mintToken } from '../../utils/erc20';
-import toast from '../../utils/toast';
+import { WETH_TOKEN, DAI_TOKEN } from '@constants/order';
+import { mintToken } from '@utils/erc20';
+import toast from '@utils/toast';
 import { ethers } from 'ethers';
 import ReactLoading from 'react-loading';
 

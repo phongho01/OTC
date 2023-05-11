@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import styles from './styles.module.scss';
 import { formatUnits } from '@utils/token';
 import { getMakerOrders, getTakerOrders, orderHistory, updateOrder } from '@api/order.api';
-import { TOKEN_SYMBOL } from '@constants/index';
+import { TOKEN_SYMBOL, TESTNET_BSC_SCAN } from '@constants/index';
 import { useSelector, useDispatch } from 'react-redux';
 import { setOrderList, removeOrder } from '@app/slice/orderList';
 import { approveERC20, checkAllowance } from '@utils/erc20';
@@ -70,8 +70,9 @@ export default function OrderList() {
       }
 
       const tx = await fillOrder(args, order.signature);
-      await tx.wait();
-      await updateOrder(order._id, { state: ORDER_STATUS.FULFILLMENT });
+      const receipt = await tx.wait();
+      console.log(receipt.transactionHash);
+      await updateOrder(order._id, { state: ORDER_STATUS.FULFILLMENT, transactionHash: receipt.transactionHash });
       dispatch(removeOrder(order._id));
       toast.success('Fill order successfully');
       setIsLoading(false);
@@ -102,8 +103,8 @@ export default function OrderList() {
         takerAmount: order.takerAmount,
       };
       const tx = await cancelOrder(args);
-      await tx.wait();
-      await updateOrder(order._id, { state: ORDER_STATUS.CANCELLATION });
+      const receipt = await tx.wait();
+      await updateOrder(order._id, { state: ORDER_STATUS.CANCELLATION, transactionHash: receipt.transactionHash });
       dispatch(removeOrder(order._id));
       toast.success('Cancel order successfully');
       setIsLoading(false);
@@ -183,10 +184,11 @@ export default function OrderList() {
               )}
               {tab === 2 && (
                 <td className={styles.textCenter} width={'15%'}>
-                  {/* <button className={styles.fillBtn} onClick={() => handleCancelOrder(item)}>
+                  {item.transactionHash ? (
+                    <a href={`${TESTNET_BSC_SCAN}/tx/${item.transactionHash}`} target='_blank' rel="noreferrer" className={styles.linkScan}>
                     View
-                  </button> */}
-                  #
+                    </a>
+                  ) : '#'}
                 </td>
               )}
             </tr>

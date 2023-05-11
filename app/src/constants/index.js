@@ -25,3 +25,5 @@ export const TOKEN_SYMBOL = {
     '0x0d1F718A3079d3B695C733BA2a726873A019299a': 'ETH',
     '0xF5B217Af5d3c828BDaEE078837b8b22cD2cBe615': 'DAI',
 }
+
+export const TESTNET_BSC_SCAN = 'https://testnet.bscscan.com'

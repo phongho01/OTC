@@ -27,26 +27,57 @@ function App() {
       const { data } = await getMakerOrders(account);
       dispatch(setOrderList(data));
     } catch (error) {
-      console.log('error', error)
+      console.log('error', error);
     }
-  }
+  };
+
+  const requireSwitchNetwork = async () => {
+    try {
+      await window.ethereum.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: '0x61' }],
+      });
+    } catch (error) {
+      if (error.code === 4902) {
+        try {
+          await window.ethereum.request({
+            method: 'wallet_addEthereumChain',
+            params: [
+              {
+                chainId: '0x61',
+                rpcUrl: 'https://data-seed-prebsc-1-s1.binance.org:8545/',
+              },
+            ],
+          });
+        } catch (addError) {
+          console.error(addError);
+        }
+      }
+      console.error(error);
+    }
+  };
 
   useEffect(() => {
-    window.ethereum
-      .request({ method: 'eth_requestAccounts' })
-      .then(handleAccountsChanged)
-      .catch((err) => {
-        console.error(err);
-      });
+    if (window.ethereum) {
+      window.ethereum
+        .request({ method: 'eth_requestAccounts' })
+        .then(handleAccountsChanged)
+        .catch((err) => {
+          console.error(err);
+        });
 
-    window.ethereum.on('accountsChanged', handleAccountsChanged);
+      window.ethereum.on('accountsChanged', handleAccountsChanged);
+      requireSwitchNetwork();
+    } else {
+      alert('MetaMask is not installed. Please consider installing it: https://metamask.io/download.html');
+    }
   }, []);
 
   useEffect(() => {
-    if(account) {
+    if (account) {
       fetchOrderList();
     }
-  }, [account])
+  }, [account]);
 
   return (
     <div className="app">

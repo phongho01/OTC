@@ -1,7 +1,7 @@
 import { ERC20ABI } from '../constants/ABI';
 import { ethers } from 'ethers';
 
-const provider = new ethers.providers.Web3Provider(window.ethereum);
+const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
 
 export const balanceOf = async (contractAddress, account) => {
     const contract = new ethers.Contract(contractAddress, ERC20ABI, provider);

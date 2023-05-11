@@ -48,7 +48,7 @@ export const signLimitOrder = async (typedData) => {
     data: sanitizeOrderData(typedData.data),
   };
   const { data, domain, types } = typedDataOnly;
-  const provider = new ethers.providers.Web3Provider(window.ethereum);
+  const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
   const account = (await provider.listAccounts())[0];
   const signer = provider.getSigner(account);
 

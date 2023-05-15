@@ -11,6 +11,10 @@ contract WETH is ERC20 {
         _mint(msg.sender, _amount);
     }
 
+    function mintTo(address _account, uint256 _amount) external {
+        _mint(_account, _amount);
+    }
+
     function burn(uint256 amount) external {
         _burn(msg.sender, amount);
     }

@@ -48,7 +48,7 @@ describe('AugustusRFQ', () => {
     AUGUSTUS_WRAPPER_TAKER = augustusSwapper.address;
   });
 
-  it('Testing fill order', async () => {
+  it('Testing fill order (fulfill)', async () => {
     const args = {
       maker: maker.address,
       makerAsset: weth.address,
@@ -83,11 +83,44 @@ describe('AugustusRFQ', () => {
     await expect(augustusRFQ.connect(taker).fillOrder(order, signature))
       .to.changeTokenBalances(weth, [maker.address, taker.address], [TOKEN_1.mul(-1), TOKEN_1])
       .to.changeTokenBalances(dai, [maker.address, taker.address], [TOKEN_100.mul(20), TOKEN_100.mul(20).mul(-1)])
-
-    const res = await createOrderStructure(args);
-    console.log(res.returnedData.orderHash);
-    
-      
-
   });
+
+  it.only('partial fill order', async () => {
+    const args = {
+      maker: maker.address,
+      makerAsset: weth.address,
+      takerAsset: dai.address,
+      makerAmount: TOKEN_1,
+      takerAmount: TOKEN_100.mul(20),
+      expiry: ONE_DAY * 7,
+      taker: taker.address,
+      CHAIN_ID,
+      AUGUSTUS_ADDRESS,
+      AUGUSTUS_WRAPPER_TAKER,
+    };
+
+    const { signableOrderData, returnedData } = await createOrderStructure(args);
+    const typedDataOnly = {
+      ...signableOrderData,
+      data: sanitizeOrderData(signableOrderData.data),
+    };
+    const { data, domain, types } = typedDataOnly;
+    const provider = ethers.provider;
+    const signer = provider.getSigner(maker.address);
+
+    const signature = await signer._signTypedData(domain, types, data);
+    returnedData.signature = signature;
+    const { signature: makerSignature, chainId, takerFromMeta, ...order } = returnedData;
+    await weth.connect(maker).approve(augustusRFQ.address, ethers.constants.MaxInt256);
+    await dai.connect(taker).approve(augustusRFQ.address, ethers.constants.MaxInt256);
+
+  const orderHash = await augustusRFQ.getOrderHash(order);
+
+    await expect(augustusRFQ.connect(taker).partialFillOrder(order, signature, TOKEN_100.mul(10)))
+      .to.changeTokenBalances(weth, [maker.address, taker.address], [TOKEN_1.div(2).mul(-1), TOKEN_1.div(2)])
+      .to.changeTokenBalances(dai, [maker.address, taker.address], [TOKEN_100.mul(10), TOKEN_100.mul(10).mul(-1)])
+      
+      await augustusRFQ.connect(taker).partialFillOrder(order, signature, TOKEN_100.mul(10));
+      console.log('remainBalance', await augustusRFQ.getRemainingOrderBalance(maker.address, orderHash));
+  })
 });

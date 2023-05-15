@@ -13,3 +13,7 @@ export const fillOrder = async (order, signature) => {
 export const cancelOrder = async (order) => {
     return contract.cancelOrder(order);
 }
+
+export const getOrderHash = async (order) => {
+    return contract.getOrderHash(order);
+}

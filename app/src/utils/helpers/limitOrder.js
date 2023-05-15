@@ -2,6 +2,7 @@ import { getRandomInt, sanitizeOrderData } from '../misc';
 import { AUGUSTUS_ADDRESS, CHAIN_ID, ORDER_TYPE, AUGUSTUS_NAME } from '../../constants/order';
 import { ethers } from 'ethers';
 import { hexValue, hexZeroPad } from '@ethersproject/bytes';
+import { getOrderHash } from '../order';
 
 const ZERO_ADDRESS = ethers.constants.AddressZero;
 
@@ -56,6 +57,6 @@ export const signLimitOrder = async (typedData) => {
   return signature;
 };
 
-export const calculateOrderHash = async ({ domain, types, data }) => {
-  return ethers.utils._TypedDataEncoder.hash(domain, types, data);
+export const calculateOrderHash = async (order) => {
+  return getOrderHash(order);
 };

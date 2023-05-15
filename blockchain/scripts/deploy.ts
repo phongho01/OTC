@@ -4,10 +4,10 @@ async function main() {
   console.log('========DEPLOY===========');
   const accounts = await ethers.getSigners();
 
-  const AugustusRFQ = await ethers.getContractFactory("AugustusRFQ");
-  const augustusRFQ = await AugustusRFQ.deploy();
-  await augustusRFQ.deployed();
-  console.log('augustusRFQ', augustusRFQ.address);
+  // const AugustusRFQ = await ethers.getContractFactory("AugustusRFQ");
+  // const augustusRFQ = await AugustusRFQ.deploy();
+  // await augustusRFQ.deployed();
+  // console.log('augustusRFQ', augustusRFQ.address);
   
   // const AugustusSwapper = await ethers.getContractFactory("AugustusSwapper");
   // const augustusSwapper = await AugustusSwapper.deploy(accounts[0].address);
@@ -24,10 +24,10 @@ async function main() {
   // await dai.deployed();
   // console.log('dai', dai.address);
 
-  await run('verify:verify', {
-    address: augustusRFQ.address,
-    constructorArguments: []
-  })
+  // await run('verify:verify', {
+  //   address: augustusRFQ.address,
+  //   constructorArguments: []
+  // })
 
   // await run('verify:verify', {
   //   address: augustusSwapper.address,
@@ -35,7 +35,7 @@ async function main() {
   // });
 
   // await run('verify:verify', {
-  //   address: '0x0d1F718A3079d3B695C733BA2a726873A019299a',
+  //   address: weth.address,
   //   contract: 'contracts/WETH.sol:WETH',
   //   constructorArguments: [ethers.utils.parseUnits('100', 18)]
   // });
@@ -45,6 +45,21 @@ async function main() {
   //   contract: 'contracts/DAI.sol:DAI',
   //   constructorArguments: [ethers.utils.parseUnits('1000000', 18)]
   // });
+  // const ERC721Test_factory = await ethers.getContractFactory("PioneerCertificate");
+
+	// console.log("============DEPLOYING CONTRACTS============");
+
+	// const erc721Test = await ERC721Test_factory.deploy("Pioneer Certificate", "PIONCE");
+	// await erc721Test.deployed();
+  // console.log(erc721Test.address)
+
+	// console.log("============SAVE CONTRACTS ADDRESS============");
+
+	console.log("============VERIFY CONTRACTS============");
+	await run("verify:verify", {
+		address: "0xd21d246B07A1f6F157d93e25D42afb61948DF035",
+		constructorArguments: ["Pioneer Certificate", "PIONCE"],
+	}).catch(console.log);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

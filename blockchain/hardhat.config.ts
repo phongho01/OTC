@@ -13,18 +13,36 @@ const config: HardhatUserConfig = {
       accounts: [process.env.DEPLOY_ACCOUNT!],
     },
     goerli: {
-      url: `https://goerli.infura.io/v3/${process.env.INFURA_API_KEY}`,
-      accounts: [process.env.DEPLOY_ACCOUNT!],
-    },
+			url: "https://eth-goerli.g.alchemy.com/v2/yiaZ5Hg5fTRH46ijJywVW1WF5ltv47xI",
+			accounts: [process.env.DEPLOY_ACCOUNT!],
+			chainId: 5,
+		},
     mainnet: {
       url: 'https://bsc-dataseed1.ninicoin.io',
       accounts: [process.env.DEPLOY_ACCOUNT!],
     },
+    polygonMumbai: {
+			url: "https://matic-mumbai.chainstacklabs.com",
+			accounts: [process.env.DEPLOY_ACCOUNT!],
+			chainId: 80001,
+		},
+    auroraTestnet: {
+			url: "https://testnet.aurora.dev",
+			accounts: [process.env.DEPLOY_ACCOUNT!]
+		},
+		arbitrumGoerli: {
+			// url: "https://arb-goerli.g.alchemy.com/v2/HvsY1VKZgg_YEJHv_o9GAjjaLmmEO8Xl",
+			url: "https://goerli-rollup.arbitrum.io/rpc",
+			accounts: [process.env.DEPLOY_ACCOUNT!]
+		}
   },
   etherscan: {
     apiKey: {
       goerli: `${process.env.ETHERSCAN_API_KEY}`,
       bscTestnet: `${process.env.BINANCE_API_KEY}`,
+      polygonMumbai: process.env.POLYGON_TEST_API_KEY!,
+      auroraTestnet: process.env.AURORA_TEST_API_KEY!,
+			arbitrumGoerli: process.env.ARBITRUM_GOERLI_TEST_API_KEY!
     },
   },
   solidity: {

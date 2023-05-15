@@ -35,7 +35,7 @@ export const createOrderStructure = async ({ taker, maker, makerAsset, takerAsse
 
   const signature = await signLimitOrder(signableOrderData);
 
-  const orderHash = await calculateOrderHash(signableOrderData);
+  const orderHash = await calculateOrderHash(signableOrderData.data);
   const takerFromMeta = deriveTakerFromNonceAndTaker(signableOrderData.data.nonceAndMeta);
 
   signableOrderData.data.makerAmount = signableOrderData.data.makerAmount.toString();

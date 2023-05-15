@@ -140,7 +140,6 @@ export const createOrderStructure = async ({
   const signableOrderData = buildLimitOrder({ ...orderInput, AUGUSTUS_ADDRESS, AUGUSTUS_WRAPPER_TAKER, CHAIN_ID });
   // const signature = await signLimitOrder(signableOrderData);
 
-  const orderHash = await calculateOrderHash(signableOrderData);
   // const orderHash = randomstring.generate(66);
   const takerFromMeta = deriveTakerFromNonceAndTaker(signableOrderData.data.nonceAndMeta);
 
@@ -150,7 +149,6 @@ export const createOrderStructure = async ({
   const returnedData = {
     ...signableOrderData.data,
     signature: '',
-    orderHash,
     chainId: CHAIN_ID,
     takerFromMeta,
   };

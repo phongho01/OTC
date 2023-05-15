@@ -59,19 +59,12 @@ contract AugustusRFQ is EIP712("AUGUSTUS RFQ", "1") {
 
     function getRemainingOrderBalance(
         address maker,
-        bytes32[] calldata orderHashes
-    ) external view returns (uint256[] memory remainingBalances) {
-        remainingBalances = new uint256[](orderHashes.length);
-        mapping(bytes32 => uint256) storage remainingMaker = remaining[maker];
-        for (uint i = 0; i < orderHashes.length; i++) {
-            remainingBalances[i] = remainingMaker[orderHashes[i]];
-        }
+        bytes32 orderHash
+    ) external view returns (uint256) {
+        return remaining[maker][orderHash];
     }
 
-    function cancelOrder(Order memory order) public {
-        bytes32 orderHash = _hashTypedDataV4(
-            keccak256(abi.encode(RFQ_LIMIT_ORDER_TYPEHASH, order))
-        );
+    function cancelOrder(bytes32 orderHash) public {
         if (_cancelOrder(msg.sender, orderHash)) {
             emit OrderCancelled(orderHash, msg.sender);
         }
@@ -350,10 +343,7 @@ contract AugustusRFQ is EIP712("AUGUSTUS RFQ", "1") {
         address target
     ) private {
         address maker = order.maker;
-        bytes32 orderHash = _hashTypedDataV4(
-            keccak256(abi.encode(RFQ_LIMIT_ORDER_TYPEHASH, order))
-        );
-        // console.logBytes32(orderHash);
+        bytes32 orderHash = getOrderHash(order);
         _checkOrder(
             maker,
             order.taker,
@@ -424,6 +414,7 @@ contract AugustusRFQ is EIP712("AUGUSTUS RFQ", "1") {
                 "Invalid Signature"
             );
             remainingMaker[orderHash] = (orderAmount - fillRequest) + 1;
+            console.log(orderAmount, fillRequest, remainingMaker[orderHash]);
         } else {
             require(
                 remainingAmount > fillRequest,
@@ -452,6 +443,18 @@ contract AugustusRFQ is EIP712("AUGUSTUS RFQ", "1") {
         remainingMaker[orderHash] = FILLED_ORDER;
         return true;
     }
+
+    /**
+     * @notice Get order hash by order
+     * @dev Everyone can call
+     * @param order Order parameters
+     */
+    function getOrderHash(Order memory order) public view returns(bytes32) {
+        bytes32 orderHash = _hashTypedDataV4(
+            keccak256(abi.encode(RFQ_LIMIT_ORDER_TYPEHASH, order))
+        );
+        return orderHash;
+    } 
 
     function transferTokens(
         address token,

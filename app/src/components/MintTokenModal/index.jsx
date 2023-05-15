@@ -18,7 +18,6 @@ export default function MintTokenModal({ handleClose }) {
   };
 
   const handleMint = async () => {
-    console.log('data', data);
     if (data.value > 0) {
       setIsLoading(true);
       try {
@@ -27,6 +26,7 @@ export default function MintTokenModal({ handleClose }) {
         setIsLoading(false);
         toast.success('Mint successfully');
       } catch (error) {
+        console.log('Mint', error)
         setIsLoading(false);
         toast.error('An error occurred while minting');
       }

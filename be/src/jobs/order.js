@@ -6,7 +6,8 @@ const orderJob = cron.schedule('*/30 * * * * *', async () => {
   const dateNow = Date.now() / 1000;
   const orders = await Order.find({ $and: [
     { expiry: { $ne: 0 } },
-    { expiry: { $lt: dateNow } }
+    { expiry: { $lt: dateNow } },
+    { state: ORDER_STATUS.PENDING }
   ] });
   for(let i = 0; i < orders.length; i++) {
     await Order.findOneAndUpdate({ _id: orders[i]._id }, { state: ORDER_STATUS.EXPIRATION })

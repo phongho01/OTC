@@ -413,11 +413,11 @@ contract AugustusRFQ is EIP712("AUGUSTUS RFQ", "1") {
                 ),
                 "Invalid Signature"
             );
-            remainingMaker[orderHash] = (orderAmount - fillRequest) + 1;
+            remainingMaker[orderHash] = (orderAmount - fillRequest);
             console.log(orderAmount, fillRequest, remainingMaker[orderHash]);
         } else {
             require(
-                remainingAmount > fillRequest,
+                remainingAmount >= fillRequest,
                 "Order already filled or expired"
             );
             remainingMaker[orderHash] = remainingAmount - fillRequest;

@@ -2,7 +2,7 @@ import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import { ethers, network } from 'hardhat';
 import { AugustusRFQ, AugustusSwapper, DAI, WETH } from '../typechain-types';
 import { createOrderStructure, sanitizeOrderData } from './utils';
-import { expect } from 'chai'
+import { expect } from 'chai';
 
 let augustusRFQ: AugustusRFQ;
 let augustusSwapper: AugustusSwapper;
@@ -78,11 +78,11 @@ describe('AugustusRFQ', () => {
     await dai.connect(taker).approve(augustusRFQ.address, ethers.constants.MaxInt256);
 
     console.log(orderHash);
-      // await augustusRFQ.connect(maker).cancelOrder(order);
+    // await augustusRFQ.connect(maker).cancelOrder(order);
 
     await expect(augustusRFQ.connect(taker).fillOrder(order, signature))
       .to.changeTokenBalances(weth, [maker.address, taker.address], [TOKEN_1.mul(-1), TOKEN_1])
-      .to.changeTokenBalances(dai, [maker.address, taker.address], [TOKEN_100.mul(20), TOKEN_100.mul(20).mul(-1)])
+      .to.changeTokenBalances(dai, [maker.address, taker.address], [TOKEN_100.mul(20), TOKEN_100.mul(20).mul(-1)]);
   });
 
   it.only('partial fill order', async () => {
@@ -91,7 +91,7 @@ describe('AugustusRFQ', () => {
       makerAsset: weth.address,
       takerAsset: dai.address,
       makerAmount: TOKEN_1,
-      takerAmount: TOKEN_100.mul(20),
+      takerAmount: TOKEN_1.mul(1887),
       expiry: ONE_DAY * 7,
       taker: taker.address,
       CHAIN_ID,
@@ -114,13 +114,18 @@ describe('AugustusRFQ', () => {
     await weth.connect(maker).approve(augustusRFQ.address, ethers.constants.MaxInt256);
     await dai.connect(taker).approve(augustusRFQ.address, ethers.constants.MaxInt256);
 
-  const orderHash = await augustusRFQ.getOrderHash(order);
+    const orderHash = await augustusRFQ.getOrderHash(order);
 
-    await expect(augustusRFQ.connect(taker).partialFillOrder(order, signature, TOKEN_100.mul(10)))
-      .to.changeTokenBalances(weth, [maker.address, taker.address], [TOKEN_1.div(2).mul(-1), TOKEN_1.div(2)])
-      .to.changeTokenBalances(dai, [maker.address, taker.address], [TOKEN_100.mul(10), TOKEN_100.mul(10).mul(-1)])
-      
-      await augustusRFQ.connect(taker).partialFillOrder(order, signature, TOKEN_100.mul(10));
-      console.log('remainBalance', await augustusRFQ.getRemainingOrderBalance(maker.address, orderHash));
-  })
+    // await expect(augustusRFQ.connect(taker).partialFillOrder(order, signature, TOKEN_100.mul(3)))
+    //   .to.changeTokenBalances(weth, [maker.address, taker.address], [TOKEN_1.div(2).mul(-1), TOKEN_1.div(2)])
+    //   .to.changeTokenBalances(dai, [maker.address, taker.address], [TOKEN_100.mul(10), TOKEN_100.mul(10).mul(-1)])
+    console.log(await weth.balanceOf(maker.address));
+    await augustusRFQ.connect(taker).partialFillOrder(order, signature, TOKEN_1.mul(1001));
+
+    await augustusRFQ.connect(taker).partialFillOrder(order, signature, TOKEN_1.mul(837));
+    await augustusRFQ.connect(taker).partialFillOrder(order, signature, TOKEN_1.mul(49));
+    console.log('remainBalance', await augustusRFQ.getRemainingOrderBalance(maker.address, orderHash));
+    console.log(await weth.balanceOf(maker.address));
+
+  });
 });

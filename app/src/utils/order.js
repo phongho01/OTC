@@ -10,8 +10,8 @@ export const fillOrder = async (order, signature) => {
     return contract.fillOrder(order, signature)
 }
 
-export const cancelOrder = async (order) => {
-    return contract.cancelOrder(order);
+export const cancelOrder = async (orderHash) => {
+    return contract.cancelOrder(orderHash);
 }
 
 export const getOrderHash = async (order) => {

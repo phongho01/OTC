@@ -92,17 +92,7 @@ export default function OrderList() {
     }
     try {
       setIsLoading(true);
-      const args = {
-        nonceAndMeta: order.nonceAndMeta,
-        expiry: order.expiry,
-        makerAsset: order.makerAsset,
-        takerAsset: order.takerAsset,
-        maker: order.maker,
-        taker: order.taker,
-        makerAmount: order.makerAmount,
-        takerAmount: order.takerAmount,
-      };
-      const tx = await cancelOrder(args);
+      const tx = await cancelOrder(order.orderHash);
       const receipt = await tx.wait();
       await updateOrder(order._id, { state: ORDER_STATUS.CANCELLATION, transactionHash: receipt.transactionHash });
       dispatch(removeOrder(order._id));

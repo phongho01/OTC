@@ -4,15 +4,15 @@ async function main() {
   console.log('========DEPLOY===========');
   const accounts = await ethers.getSigners();
 
-  // const AugustusRFQ = await ethers.getContractFactory("AugustusRFQ");
-  // const augustusRFQ = await AugustusRFQ.deploy();
-  // await augustusRFQ.deployed();
-  // console.log('augustusRFQ', augustusRFQ.address);
-  
   // const AugustusSwapper = await ethers.getContractFactory("AugustusSwapper");
   // const augustusSwapper = await AugustusSwapper.deploy(accounts[0].address);
   // await augustusSwapper.deployed();
   // console.log('augustusSwapper', augustusSwapper.address);
+
+  const AugustusRFQ = await ethers.getContractFactory("AugustusRFQ");
+  const augustusRFQ = await AugustusRFQ.deploy();
+  await augustusRFQ.deployed();
+  console.log('augustusRFQ', augustusRFQ.address);
 
   // const WETH = await ethers.getContractFactory("WETH");
   // const weth = await WETH.deploy(ethers.utils.parseUnits('100', 18));
@@ -24,10 +24,10 @@ async function main() {
   // await dai.deployed();
   // console.log('dai', dai.address);
 
-  // await run('verify:verify', {
-  //   address: augustusRFQ.address,
-  //   constructorArguments: []
-  // })
+  await run('verify:verify', {
+    address: augustusRFQ.address,
+    constructorArguments: []
+  })
 
   // await run('verify:verify', {
   //   address: augustusSwapper.address,
@@ -55,11 +55,11 @@ async function main() {
 
 	// console.log("============SAVE CONTRACTS ADDRESS============");
 
-	console.log("============VERIFY CONTRACTS============");
-	await run("verify:verify", {
-		address: "0xd21d246B07A1f6F157d93e25D42afb61948DF035",
-		constructorArguments: ["Pioneer Certificate", "PIONCE"],
-	}).catch(console.log);
+	// console.log("============VERIFY CONTRACTS============");
+	// await run("verify:verify", {
+	// 	address: "0xd21d246B07A1f6F157d93e25D42afb61948DF035",
+	// 	constructorArguments: ["Pioneer Certificate", "PIONCE"],
+	// }).catch(console.log);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

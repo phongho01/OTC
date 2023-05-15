@@ -32,7 +32,7 @@ class OrderController {
             const orders = await Order.find({ $or: [ 
                 {"taker" : { '$regex': user, $options: 'i' }},
                 {"maker" : { '$regex': user, $options: 'i' }}
-             ], state: { $ne: ORDER_STATUS.PENDING } }).sort({ createdAt: -1 });
+             ], state: { $ne: ORDER_STATUS.PENDING } }).sort({ updatedAt: -1 });
             res.json(orders);
         } catch (error) {
             console.log(error);

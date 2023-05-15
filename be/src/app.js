@@ -16,6 +16,9 @@ app.use(cors({ original: '*' }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.get('/', (req, res) => {
+    res.send('OTC API is active');
+})
 app.use('/api/v1', routes);
 orderJob.start();
 

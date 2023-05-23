@@ -17,7 +17,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
-    res.send('OTC API is active');
+    res.redirect(process.env.FE_HOST);
 })
 app.use('/api/v1', routes);
 orderJob.start();

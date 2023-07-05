@@ -20,6 +20,10 @@ const config: HardhatUserConfig = {
       url: 'https://bsc-dataseed1.ninicoin.io',
       accounts: [process.env.DEPLOY_ACCOUNT!],
     },
+    cvcTestnet: {
+      url: 'https://rpc-kura.cross.technology',
+      accounts: [process.env.DEPLOY_ACCOUNT!],
+    }
   },
   etherscan: {
     apiKey: {

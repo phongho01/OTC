@@ -50,10 +50,10 @@ async function main() {
     const chonkSociety = await ChonkSociety.deploy('https://chonksociety.s3.us-east-2.amazonaws.com/metadata/');
     await chonkSociety.deployed();
     console.log('address', chonkSociety.address);
-    // const WXCR = await ethers.getContractFactory('wXCR');
-    // const wXCR = await WXCR.deploy();
-    // await wXCR.deployed();
-    // console.log('address', wXCR.address);
+    const WXCR = await ethers.getContractFactory('wXCR');
+    const wXCR = await WXCR.deploy();
+    await wXCR.deployed();
+    console.log('address', wXCR.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

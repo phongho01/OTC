@@ -2,7 +2,7 @@
 pragma solidity 0.8.16;
 import '@openzeppelin/contracts/token/ERC20/ERC20.sol';
 
-contract wXCR is ERC20 {
+contract WXCR is ERC20 {
     constructor() ERC20('Wrapped XCR', 'wXCR') {}
 
     function mint(address _to, uint256 _amount) external {
